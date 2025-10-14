@@ -1,4 +1,4 @@
-# test
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -39,6 +39,31 @@
       margin-top: 1rem;
       cursor: pointer;
     }
+
+    /* モーダルのスタイル */
+    #confirmModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #confirmModal .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 300px;
+    }
+    #confirmModal .modal-content p {
+      margin-bottom: 1.5rem;
+    }
+    #confirmModal .btn {
+      margin: 0 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -50,13 +75,38 @@
     <div id="closeContainer"></div>
   </div>
 
+  <!-- 交換確認モーダル -->
+  <div id="confirmModal">
+    <div class="modal-content">
+      <p>本当に景品と交換しますか？</p>
+      <button id="confirmOk" class="btn">OK</button>
+      <button id="confirmCancel" class="btn">キャンセル</button>
+    </div>
+  </div>
+
   <script>
     const resultDiv = document.getElementById('result');
     const randDiv = document.getElementById('rand');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
 
-    
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmOk = document.getElementById('confirmOk');
+    const confirmCancel = document.getElementById('confirmCancel');
+
+    // Cookieを設定する関数（有効期限1日）
+    function setCookie(name, value, days = 1) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${date.toUTCString()};path=/`;
+    }
+
+    // Cookieを取得する関数
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
     // 「サイトを閉じる」ボタンを作成する関数
     function createCloseButton() {
       const closeBtn = document.createElement('button');
@@ -72,8 +122,24 @@
       }, 3000);
     }
 
+    // 初期処理
+    window.addEventListener('DOMContentLoaded', () => {
+      const storedResult = getCookie('lottery_result');
+      const storedRand = getCookie('lottery_rand');
+      const exchanged = getCookie('exchanged');
 
-      //抽選処理
+      // 抽選結果がすでに存在する場合
+      if (storedResult && storedRand) {
+        resultDiv.textContent = storedResult;
+        randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
+
+        if (exchanged === 'true') {
+          resultDiv.textContent = "✅ 景品を交換しました！";
+          exchangeBtn.disabled = true;
+          createCloseButton();
+        }
+      } else {
+        // 新規抽選処理
         const rand = Math.random() * 1000;
         randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
 
@@ -96,20 +162,24 @@
       }
     });
 
- // 交換処理
-    resultDiv.textContent = "✅ 景品を交換しました！";
-    exchangeBtn.disabled = true;
-    setCookie('exchanged', 'true');
-    createCloseButton();
-});
+    // 「交換する」ボタンクリックでモーダル表示
+    exchangeBtn.addEventListener('click', () => {
+      confirmModal.style.display = 'flex';
+    });
 
-<div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-  background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 9999;">
-  <div style="background: white; padding: 2rem; border-radius: 8px; text-align: center; min-width: 300px;">
-    <p style="margin-bottom: 1.5rem;">本当に景品と交換しますか？</p>
-    <button id="confirmOk" class="btn" style="margin-right: 1rem;">OK</button>
-    <button id="confirmCancel" class="btn">キャンセル</button>
-  </div>
-</div>
+    // モーダル「OK」ボタン処理
+    confirmOk.addEventListener('click', () => {
+      resultDiv.textContent = "✅ 景品を交換しました！";
+      exchangeBtn.disabled = true;
+      setCookie('exchanged', 'true');
+      createCloseButton();
+      confirmModal.style.display = 'none';
+    });
 
+    // モーダル「キャンセル」ボタン処理
+    confirmCancel.addEventListener('click', () => {
+      confirmModal.style.display = 'none';
+    });
   </script>
+</body>
+</html>
