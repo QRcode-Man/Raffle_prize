@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -39,60 +38,42 @@
       margin-top: 1rem;
       cursor: pointer;
     }
-
-    /* モーダルのスタイル */
-    #confirmModal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #confirmModal .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      text-align: center;
-      min-width: 300px;
-    }
-    #confirmModal .modal-content p {
-      margin-bottom: 1.5rem;
-    }
-    #confirmModal .btn {
-      margin: 0 0.5rem;
-    }
   </style>
 </head>
 <body>
+  document.body.appendChild(video);
   <div class="container">
-    <div class="title">抽選結果はこちら！</div>
     <div class="result" id="result">...</div>
-    <div class="rand" id="rand">乱数: --</div>
     <button class="btn" id="exchangeBtn">交換する</button>
     <div id="closeContainer"></div>
   </div>
 
-  <!-- 交換確認モーダル -->
-  <div id="confirmModal">
-    <div class="modal-content">
-      <p>本当に景品と交換しますか？</p>
-      <button id="confirmOk" class="btn">OK</button>
-      <button id="confirmCancel" class="btn">キャンセル</button>
-    </div>
-  </div>
-
   <script>
+ function playVideo(src) {
+  const video = document.createElement('video');
+  video.src = src;
+  video.autoplay = true;
+  video.controls = true;
+  video.muted = true; // 自動再生対策（ブラウザ制限回避）
+
+  // フルスクリーン用のスタイル
+  video.style.position = 'fixed';
+  video.style.top = '0';
+  video.style.left = '0';
+  video.style.width = '100vw';
+ video.style.height = '100vh';
+  video.style.objectFit = 'cover';
+  video.style.zIndex = '9999'; // 最前面に表示
+
+  // 再生終了後、動画を消す
+  video.addEventListener('ended', () => {
+    video.remove();
+  });
+    
     const resultDiv = document.getElementById('result');
     const randDiv = document.getElementById('rand');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
-
-    const confirmModal = document.getElementById('confirmModal');
-    const confirmOk = document.getElementById('confirmOk');
-    const confirmCancel = document.getElementById('confirmCancel');
 
     // Cookieを設定する関数（有効期限1日）
     function setCookie(name, value, days = 1) {
@@ -144,17 +125,23 @@
         randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
 
         let prize;
-        if (rand < 10) {
-          prize = "🎉 1等！おめでとう！";
-        } else if (rand < 40) {
-          prize = "✨ 2等！すばらしい！";
-        } else if (rand < 80) {
-          prize = "🎁 3等！感謝の気持ちを込めて！";
-        } else if (rand < 150) {
-          prize = "4等！それなりに";
-        } else {
-          prize = "残念！はずれ～";
-        }
+if (rand < 10) {
+  playVideo("1等.mp4");
+  prize = "🎉 1等！おめでとう！";
+} else if (rand < 40) {
+  playVideo("2等.mp4");
+  prize = "✨ 2等！すばらしい！";
+} else if (rand < 80) {
+  playVideo("3等.mp4");
+  prize = "🎁 3等！感謝の気持ちを込めて！";
+} else if (rand < 150) {
+  playVideo("4等.mp4");
+  prize = "4等！それなりに";
+} else {
+  playVideo("はずれ.mp4");
+  prize = "残念！はずれ～";
+}
+
 
         resultDiv.textContent = prize;
         setCookie('lottery_result', prize);
@@ -162,24 +149,11 @@
       }
     });
 
-    // 「交換する」ボタンクリックでモーダル表示
+    // 交換処理
     exchangeBtn.addEventListener('click', () => {
-      confirmModal.style.display = 'flex';
-    });
-
-    // モーダル「OK」ボタン処理
-    confirmOk.addEventListener('click', () => {
       resultDiv.textContent = "✅ 景品を交換しました！";
       exchangeBtn.disabled = true;
       setCookie('exchanged', 'true');
       createCloseButton();
-      confirmModal.style.display = 'none';
-    });
-
-    // モーダル「キャンセル」ボタン処理
-    confirmCancel.addEventListener('click', () => {
-      confirmModal.style.display = 'none';
     });
   </script>
-</body>
-</html>
