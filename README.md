@@ -75,7 +75,7 @@
       closeBtn.textContent = '3秒後に自動で閉じます（またはクリック）';
       closeBtn.className = 'btn';
       closeBtn.onclick = () => {
-        window.location.href = 'http://abehiroshi.la.coocan.jp'; // 任意のリダイレクト先
+        window.location.href = 'http://abehiroshi.la.coocan.jp';
       };
       closeContainer.appendChild(closeBtn);
 
@@ -90,7 +90,7 @@
       video.src = src;
       video.autoplay = true;
       video.controls = true;
-      video.muted = true; // 自動再生のために必要
+      video.muted = true;
       video.style.position = 'fixed';
       video.style.top = '0';
       video.style.left = '0';
@@ -99,7 +99,6 @@
       video.style.objectFit = 'cover';
       video.style.zIndex = '9999';
 
-      // 再生終了時に動画を削除
       video.addEventListener('ended', () => {
         video.remove();
       });
@@ -113,52 +112,12 @@
       const storedRand = getCookie('lottery_rand');
       const exchanged = getCookie('exchanged');
 
-      // 抽選結果がすでに存在する場合
       if (storedResult && storedRand) {
         resultDiv.textContent = storedResult;
         randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
 
-        if (exchanged === 'true') {
-          resultDiv.textContent = "✅ 景品を交換しました！";
-          exchangeBtn.disabled = true;
-          createCloseButton();
-        }
-      } else {
-        // 新規抽選処理
-        const rand = Math.random() * 1000;
-        randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
-
-        let prize;
-        if (rand < 10) {
-          playVideo("1等.mp4");
-          prize = "🎉 1等！おめでとう！";
-        } else if (rand < 40) {
-          playVideo("2等.mp4");
-          prize = "✨ 2等！すばらしい！";
-        } else if (rand < 80) {
-          playVideo("3等.mp4");
-          prize = "🎁 3等！感謝の気持ちを込めて！";
-        } else if (rand < 150) {
-          playVideo("4等.mp4");
-          prize = "4等！それなりに";
-        } else {
-          playVideo("はずれ.mp4");
-          prize = "残念！はずれ～";
-        }
-
-        resultDiv.textContent = prize;
-        setCookie('lottery_result', prize);
-        setCookie('lottery_rand', rand);
-      }
-    });
-
-    // 交換処理
-    exchangeBtn.addEventListener('click', () => {
-      resultDiv.textContent = "✅ 景品を交換しました！";
-      exchangeBtn.disabled = true;
-      setCookie('exchanged', 'true');
-      createCloseButton();
-    });
-  </script>
-</body>
-</html>
+        if (exchanged !== 'true') {
+          // 保存された結果に応じて動画を再生
+          if (storedResult.includes("1等")) {
+            playVideo("1等.mp4");
+          } else if (storedResult.incl
