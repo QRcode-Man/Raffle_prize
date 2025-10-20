@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -51,6 +50,17 @@
   </div>
 
   <script>
+    function playVideo(src) {
+      const video = document.createElement('video');
+      video.src = src;
+      video.width = 560;
+      video.height = 315;
+      video.autoplay = true;
+      video.controls = true;
+      closeContainer.innerHTML = ''; // 前の要素をクリア
+      closeContainer.appendChild(video);
+    }
+
     const resultDiv = document.getElementById('result');
     const randDiv = document.getElementById('rand');
     const exchangeBtn = document.getElementById('exchangeBtn');
@@ -84,28 +94,6 @@
       }, 3000);
     }
 
-    // 🎥 全画面で動画を再生し、終了後に自動で削除する関数
-    function playVideo(src) {
-      const video = document.createElement('video');
-      video.src = src;
-      video.autoplay = true;
-      video.controls = true;
-      video.muted = true;
-      video.style.position = 'fixed';
-      video.style.top = '0';
-      video.style.left = '0';
-      video.style.width = '100vw';
-      video.style.height = '100vh';
-      video.style.objectFit = 'cover';
-      video.style.zIndex = '9999';
-
-      video.addEventListener('ended', () => {
-        video.remove();
-      });
-
-      document.body.appendChild(video);
-    }
-
     // 初期処理
     window.addEventListener('DOMContentLoaded', () => {
       const storedResult = getCookie('lottery_result');
@@ -116,8 +104,60 @@
         resultDiv.textContent = storedResult;
         randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
 
-        if (exchanged !== 'true') {
-          // 保存された結果に応じて動画を再生
-          if (storedResult.includes("1等")) {
-            playVideo("1等.mp4");
-          } else if (storedResult.incl
+        // ★ 再読み込み時に動画を再生
+        if (storedResult.includes("1等")) {
+          playVideo("1等.mp4");
+        } else if (storedResult.includes("2等")) {
+          playVideo("2等.mp4");
+        } else if (storedResult.includes("3等")) {
+          playVideo("3等.mp4");
+        } else if (storedResult.includes("4等")) {
+          playVideo("4等.mp4");
+        } else if (storedResult.includes("はずれ")) {
+          playVideo("はずれ.mp4");
+        }
+
+        if (exchanged === 'true') {
+          resultDiv.textContent = "✅ 景品を交換しました！";
+          exchangeBtn.disabled = true;
+          createCloseButton();
+        }
+      } else {
+        // 新規抽選処理
+        const rand = Math.random() * 1000;
+        randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
+
+        let prize;
+        if (rand < 10) {
+          playVideo("1等.mp4");
+          prize = "🎉 1等！おめでとう！";
+        } else if (rand < 40) {
+          playVideo("2等.mp4");
+          prize = "✨ 2等！すばらしい！";
+        } else if (rand < 80) {
+          playVideo("3等.mp4");
+          prize = "🎁 3等！感謝の気持ちを込めて！";
+        } else if (rand < 150) {
+          playVideo("4等.mp4");
+          prize = "4等！それなりに";
+        } else {
+          playVideo("はずれ.mp4");
+          prize = "残念！はずれ～";
+        }
+
+        resultDiv.textContent = prize;
+        setCookie('lottery_result', prize);
+        setCookie('lottery_rand', rand);
+      }
+    });
+
+    // 交換処理
+    exchangeBtn.addEventListener('click', () => {
+      resultDiv.textContent = "✅ 景品を交換しました！";
+      exchangeBtn.disabled = true;
+      setCookie('exchanged', 'true');
+      createCloseButton();
+    });
+  </script>
+</body>
+</html>
