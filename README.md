@@ -44,7 +44,6 @@
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
     <div class="result" id="result">...</div>
-    <div class="rand" id="rand">乱数: --</div>
     <button class="btn" id="exchangeBtn">交換する</button>
     <div id="closeContainer"></div>
   </div>
