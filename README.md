@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -41,35 +42,15 @@
   </style>
 </head>
 <body>
-  document.body.appendChild(video);
   <div class="container">
+    <div class="title">抽選結果はこちら！</div>
     <div class="result" id="result">...</div>
+    <div class="rand" id="rand">乱数: --</div>
     <button class="btn" id="exchangeBtn">交換する</button>
     <div id="closeContainer"></div>
   </div>
 
   <script>
- function playVideo(src) {
-  const video = document.createElement('video');
-  video.src = src;
-  video.autoplay = true;
-  video.controls = true;
-  video.muted = true; // 自動再生対策（ブラウザ制限回避）
-
-  // フルスクリーン用のスタイル
-  video.style.position = 'fixed';
-  video.style.top = '0';
-  video.style.left = '0';
-  video.style.width = '100vw';
- video.style.height = '100vh';
-  video.style.objectFit = 'cover';
-  video.style.zIndex = '9999'; // 最前面に表示
-
-  // 再生終了後、動画を消す
-  video.addEventListener('ended', () => {
-    video.remove();
-  });
-    
     const resultDiv = document.getElementById('result');
     const randDiv = document.getElementById('rand');
     const exchangeBtn = document.getElementById('exchangeBtn');
@@ -78,7 +59,7 @@
     // Cookieを設定する関数（有効期限1日）
     function setCookie(name, value, days = 1) {
       const date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
       document.cookie = `${name}=${encodeURIComponent(value)};expires=${date.toUTCString()};path=/`;
     }
 
@@ -103,6 +84,29 @@
       }, 3000);
     }
 
+    // 🎥 全画面で動画を再生し、終了後に自動で削除する関数
+    function playVideo(src) {
+      const video = document.createElement('video');
+      video.src = src;
+      video.autoplay = true;
+      video.controls = true;
+      video.muted = true; // 自動再生のために必要
+      video.style.position = 'fixed';
+      video.style.top = '0';
+      video.style.left = '0';
+      video.style.width = '100vw';
+      video.style.height = '100vh';
+      video.style.objectFit = 'cover';
+      video.style.zIndex = '9999';
+
+      // 再生終了時に動画を削除
+      video.addEventListener('ended', () => {
+        video.remove();
+      });
+
+      document.body.appendChild(video);
+    }
+
     // 初期処理
     window.addEventListener('DOMContentLoaded', () => {
       const storedResult = getCookie('lottery_result');
@@ -125,23 +129,22 @@
         randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
 
         let prize;
-if (rand < 10) {
-  playVideo("1等.mp4");
-  prize = "🎉 1等！おめでとう！";
-} else if (rand < 40) {
-  playVideo("2等.mp4");
-  prize = "✨ 2等！すばらしい！";
-} else if (rand < 80) {
-  playVideo("3等.mp4");
-  prize = "🎁 3等！感謝の気持ちを込めて！";
-} else if (rand < 150) {
-  playVideo("4等.mp4");
-  prize = "4等！それなりに";
-} else {
-  playVideo("はずれ.mp4");
-  prize = "残念！はずれ～";
-}
-
+        if (rand < 10) {
+          playVideo("1等.mp4");
+          prize = "🎉 1等！おめでとう！";
+        } else if (rand < 40) {
+          playVideo("2等.mp4");
+          prize = "✨ 2等！すばらしい！";
+        } else if (rand < 80) {
+          playVideo("3等.mp4");
+          prize = "🎁 3等！感謝の気持ちを込めて！";
+        } else if (rand < 150) {
+          playVideo("4等.mp4");
+          prize = "4等！それなりに";
+        } else {
+          playVideo("はずれ.mp4");
+          prize = "残念！はずれ～";
+        }
 
         resultDiv.textContent = prize;
         setCookie('lottery_result', prize);
@@ -157,3 +160,5 @@ if (rand < 10) {
       createCloseButton();
     });
   </script>
+</body>
+</html>
