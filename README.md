@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（フルスクリーン＆乱数表示付き）</title>
+  <title>抽選＆交換サイト（クリック抽選＆フルスクリーン対応）</title>
   <style>
     body {
       display: flex;
@@ -56,15 +56,17 @@
 <body>
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
-    <div class="result" id="result">...</div>
+    <div class="result" id="result">まだ抽選していません</div>
     <div class="rand" id="rand">乱数: ...</div>
-    <button class="btn" id="exchangeBtn">交換する</button>
+    <button class="btn" id="lotteryBtn">抽選する</button>
+    <button class="btn" id="exchangeBtn" disabled>交換する</button>
     <div id="closeContainer"></div>
   </div>
 
   <script>
     const resultDiv = document.getElementById('result');
     const randDiv = document.getElementById('rand');
+    const lotteryBtn = document.getElementById('lotteryBtn');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
 
@@ -77,7 +79,7 @@
       video.controls = false;
       document.body.appendChild(video);
 
-      // フルスクリーンモードにする
+      // フルスクリーンをリクエスト（ユーザー操作内なのでOK）
       if (video.requestFullscreen) {
         video.requestFullscreen().catch(() => {});
       } else if (video.webkitRequestFullscreen) {
@@ -108,7 +110,7 @@
       }, 3000);
     }
 
-    // 抽選処理
+    // 抽選処理（ボタンクリック時のみ実行）
     function runLottery() {
       const rand = Math.random() * 1000;
       let prize, videoFile;
@@ -132,11 +134,14 @@
 
       resultDiv.textContent = prize;
       randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
+      exchangeBtn.disabled = false;
+
+      // フルスクリーン再生
       playVideoFullscreen(videoFile);
     }
 
-    // ページ読み込み時に毎回抽選
-    window.addEventListener('DOMContentLoaded', runLottery);
+    // ボタンで抽選を実行
+    lotteryBtn.addEventListener('click', runLottery);
 
     // 交換処理
     exchangeBtn.addEventListener('click', () => {
