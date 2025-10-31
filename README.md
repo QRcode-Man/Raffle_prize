@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（乱数表示付き）</title>
+  <title>抽選＆交換サイト（制限なし）</title>
   <style>
     body {
       display: flex;
@@ -56,27 +56,13 @@
       video.height = 315;
       video.autoplay = true;
       video.controls = true;
-      closeContainer.innerHTML = ''; // 前の要素をクリア
+      closeContainer.innerHTML = ''; 
       closeContainer.appendChild(video);
     }
 
     const resultDiv = document.getElementById('result');
-    const randDiv = document.getElementById('rand');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
-
-    // Cookieを設定する関数（有効期限1日）
-    function setCookie(name, value, days = 1) {
-      const date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = `${name}=${encodeURIComponent(value)};expires=${date.toUTCString()};path=/`;
-    }
-
-    // Cookieを取得する関数
-    function getCookie(name) {
-      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      return match ? decodeURIComponent(match[2]) : null;
-    }
 
     // 「サイトを閉じる」ボタンを作成する関数
     function createCloseButton() {
@@ -93,68 +79,38 @@
       }, 3000);
     }
 
-    // 初期処理
-    window.addEventListener('DOMContentLoaded', () => {
-      const storedResult = getCookie('lottery_result');
-      const storedRand = getCookie('lottery_rand');
-      const exchanged = getCookie('exchanged');
+    // 抽選処理（毎回新しく実行される）
+    function runLottery() {
+      const rand = Math.random() * 1000;
+      let prize;
 
-      if (storedResult && storedRand) {
-        resultDiv.textContent = storedResult;
-        randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
-
-        // ★ 再読み込み時に動画を再生
-        if (storedResult.includes("1等")) {
-          playVideo("1等.mp4");
-        } else if (storedResult.includes("2等")) {
-          playVideo("2等.mp4");
-        } else if (storedResult.includes("3等")) {
-          playVideo("3等.mp4");
-        } else if (storedResult.includes("4等")) {
-          playVideo("4等.mp4");
-        } else if (storedResult.includes("はずれ")) {
-          playVideo("はずれ.mp4");
-        }
-
-        if (exchanged === 'true') {
-          resultDiv.textContent = "✅ 景品を交換しました！";
-          exchangeBtn.disabled = true;
-          createCloseButton();
-        }
+      if (rand < 10) {
+        playVideo("1等.mp4");
+        prize = "🎉 1等！おめでとう！";
+      } else if (rand < 40) {
+        playVideo("2等.mp4");
+        prize = "✨ 2等！すばらしい！";
+      } else if (rand < 80) {
+        playVideo("3等.mp4");
+        prize = "🎁 3等！感謝の気持ちを込めて！";
+      } else if (rand < 150) {
+        playVideo("4等.mp4");
+        prize = "4等！それなりに";
       } else {
-        // 新規抽選処理
-        const rand = Math.random() * 1000;
-        randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
-
-        let prize;
-        if (rand < 10) {
-          playVideo("1等.mp4");
-          prize = "🎉 1等！おめでとう！";
-        } else if (rand < 40) {
-          playVideo("2等.mp4");
-          prize = "✨ 2等！すばらしい！";
-        } else if (rand < 80) {
-          playVideo("3等.mp4");
-          prize = "🎁 3等！感謝の気持ちを込めて！";
-        } else if (rand < 150) {
-          playVideo("4等.mp4");
-          prize = "4等！それなりに";
-        } else {
-          playVideo("はずれ.mp4");
-          prize = "残念！はずれ～";
-        }
-
-        resultDiv.textContent = prize;
-        setCookie('lottery_result', prize);
-        setCookie('lottery_rand', rand);
+        playVideo("はずれ.mp4");
+        prize = "残念！はずれ～";
       }
-    });
+
+      resultDiv.textContent = prize;
+    }
+
+    // ページ読み込み時に毎回抽選
+    window.addEventListener('DOMContentLoaded', runLottery);
 
     // 交換処理
     exchangeBtn.addEventListener('click', () => {
       resultDiv.textContent = "✅ 景品を交換しました！";
       exchangeBtn.disabled = true;
-      setCookie('exchanged', 'true');
       createCloseButton();
     });
   </script>
