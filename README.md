@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（スマホ対応＋Cookie＋フルスクリーン）</title>
+  <title>抽選＆交換サイト</title>
   <style>
     body {
       display: flex;
@@ -66,7 +66,7 @@
 <body>
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
-    <div class="result" id="result">まだ抽選していません</div>
+    <div class="result" id="result">抽選ボタンを押してください！</div>
     <div class="rand" id="rand">乱数: ...</div>
     <button class="btn" id="lotteryBtn">抽選する</button>
     <button class="btn" id="exchangeBtn" disabled>交換する</button>
