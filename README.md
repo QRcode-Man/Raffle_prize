@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -135,8 +136,11 @@
       };
       closeContainer.appendChild(closeBtn);
 
+      // 3秒後に自動でリダイレクト
       setTimeout(() => {
-        window.location.href = 'http://abehiroshi.la.coocan.jp';
+        if (getCookie('exchanged') === 'true') {  // 交換完了状態を確認
+          window.location.href = 'http://abehiroshi.la.coocan.jp';
+        }
       }, 3000);
     }
 
@@ -215,6 +219,13 @@
         randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
         exchangeBtn.disabled = exchanged === 'true';
         noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
+      }
+
+      // ページが再読み込みされた後、交換が完了していれば「交換完了」メッセージを表示
+      if (exchanged === 'true') {
+        resultDiv.textContent = "✅ 景品を交換しました！";
+        exchangeBtn.disabled = true;
+        createCloseButton(); // 閉じるボタンを表示
       }
 
       // 抽選済みならボタン非表示
