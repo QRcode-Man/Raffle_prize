@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（フルスクリーン対応）</title>
+  <title>抽選＆交換サイト（フルスクリーン＆乱数表示付き）</title>
   <style>
     body {
       display: flex;
@@ -30,6 +30,11 @@
       color: #0077cc;
       margin: 1rem 0;
     }
+    .rand {
+      font-size: 1rem;
+      color: #555;
+      margin-top: 0.5rem;
+    }
     .btn {
       font-size: 1rem;
       padding: 0.5rem 1rem;
@@ -52,12 +57,14 @@
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
     <div class="result" id="result">...</div>
+    <div class="rand" id="rand">乱数: ...</div>
     <button class="btn" id="exchangeBtn">交換する</button>
     <div id="closeContainer"></div>
   </div>
 
   <script>
     const resultDiv = document.getElementById('result');
+    const randDiv = document.getElementById('rand');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
 
@@ -70,14 +77,14 @@
       video.controls = false;
       document.body.appendChild(video);
 
-      // ブラウザのフルスクリーンAPIを使用
+      // フルスクリーンモードにする
       if (video.requestFullscreen) {
         video.requestFullscreen().catch(() => {});
       } else if (video.webkitRequestFullscreen) {
         video.webkitRequestFullscreen();
       }
 
-      // 再生終了時に自動で削除
+      // 再生終了時に削除
       video.addEventListener('ended', () => {
         if (document.fullscreenElement) {
           document.exitFullscreen();
@@ -86,7 +93,7 @@
       });
     }
 
-    // 「サイトを閉じる」ボタンを作成
+    // 「サイトを閉じる」ボタン
     function createCloseButton() {
       const closeBtn = document.createElement('button');
       closeBtn.textContent = '3秒後に自動で閉じます（またはクリック）';
@@ -101,7 +108,7 @@
       }, 3000);
     }
 
-    // 抽選処理（毎回新しく実行される）
+    // 抽選処理
     function runLottery() {
       const rand = Math.random() * 1000;
       let prize, videoFile;
@@ -124,6 +131,7 @@
       }
 
       resultDiv.textContent = prize;
+      randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
       playVideoFullscreen(videoFile);
     }
 
