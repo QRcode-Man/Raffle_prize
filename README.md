@@ -147,7 +147,7 @@
         resultDiv.textContent = storedResult;
         exchangeBtn.disabled = exchanged === 'true';
         lotteryBtn.style.display = 'none';
-        noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
+        noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！（はずれの場合は景品は無いです）";
         return;
       }
 
@@ -170,7 +170,7 @@
 
       // 結果表示
       resultDiv.textContent = prize;
-      noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
+      noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！（はずれの場合は景品は無いです）";
       exchangeBtn.disabled = false;
 
       // Cookie保存（1日有効）
@@ -204,7 +204,7 @@
       if (storedResult) {
         resultDiv.textContent = storedResult;
         exchangeBtn.disabled = exchanged === 'true';
-        noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
+        noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！（はずれの場合は景品はないです）";
       }
 
       // ページが再読み込みされた後、交換が完了していれば「交換完了」メッセージを表示
