@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（完全版）</title>
+  <title>抽選＆交換サイト</title>
   <style>
     body {
       display: flex;
