@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト</title>
+  <title>抽選＆交換サイト（完全版）</title>
   <style>
     body {
       display: flex;
@@ -37,6 +37,12 @@
       color: #555;
       margin-top: 0.5rem;
     }
+    .notice {
+      font-size: 1rem;
+      color: #d9534f;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
     .btn {
       font-size: 1rem;
       padding: 0.6rem 1.2rem;
@@ -66,8 +72,9 @@
 <body>
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
-    <div class="result" id="result">抽選ボタンを押してください！</div>
+    <div class="result" id="result">↓下の抽選するを押してください↓</div>
     <div class="rand" id="rand">乱数: ...</div>
+    <div class="notice" id="notice"></div>
     <button class="btn" id="lotteryBtn">抽選する</button>
     <button class="btn" id="exchangeBtn" disabled>交換する</button>
     <div id="closeContainer"></div>
@@ -76,6 +83,7 @@
   <script>
     const resultDiv = document.getElementById('result');
     const randDiv = document.getElementById('rand');
+    const noticeDiv = document.getElementById('notice');
     const lotteryBtn = document.getElementById('lotteryBtn');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
@@ -101,14 +109,14 @@
       video.controls = false;
       document.body.appendChild(video);
 
-      // フルスクリーンを要求（クリックイベント内ならOK）
+      // フルスクリーンを要求
       if (video.requestFullscreen) {
         video.requestFullscreen().catch(() => {});
       } else if (video.webkitRequestFullscreen) {
         video.webkitRequestFullscreen();
       }
 
-      // 再生終了時に削除
+      // 再生終了で削除
       video.addEventListener('ended', () => {
         if (document.fullscreenElement) {
           document.exitFullscreen();
@@ -138,53 +146,57 @@
       const storedRand = getCookie('lottery_rand');
       const exchanged = getCookie('exchanged');
 
+      // すでに抽選済みなら弾く
       if (storedResult && storedRand) {
         alert("今日はすでに抽選済みです。");
         resultDiv.textContent = storedResult;
         randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
         exchangeBtn.disabled = exchanged === 'true';
         lotteryBtn.style.display = 'none';
+        noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
         return;
       }
 
-      const rand = Math.random() * 1000;
+      const rand = Math.random() * 800;
       let prize, videoFile;
 
-      if (rand < 10) {
+      if (rand < 200) {
         prize = "🎉 1等！おめでとう！";
         videoFile = "1等.mp4";
-      } else if (rand < 40) {
+      } else if (rand < 400) {
         prize = "✨ 2等！すばらしい！";
         videoFile = "2等.mp4";
-      } else if (rand < 80) {
+      } else if (rand < 600) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等.mp4";
-      } else if (rand < 150) {
-        prize = "4等！それなりに";
-        videoFile = "4等.mp4";
       } else {
         prize = "残念！はずれ～";
         videoFile = "はずれ.mp4";
       }
 
+      // 結果表示
       resultDiv.textContent = prize;
       randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
+      noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
       exchangeBtn.disabled = false;
 
-      // 結果をCookieに保存（1日有効）
+      // Cookie保存（1日有効）
       setCookie('lottery_result', prize);
       setCookie('lottery_rand', rand);
-
-      // 抽選ボタンを非表示
-      lotteryBtn.style.display = 'none';
       setCookie('lottery_done', 'true');
 
-      // 動画再生
+      // 抽選ボタン非表示
+      lotteryBtn.style.display = 'none';
+
+      // フルスクリーン動画再生
       playVideoFullscreen(videoFile);
     }
 
     /* --- 交換処理 --- */
     exchangeBtn.addEventListener('click', () => {
+      const confirmExchange = confirm("交換所以外で交換完了したら交換できなくなりますがよろしいですか？");
+      if (!confirmExchange) return;
+
       resultDiv.textContent = "✅ 景品を交換しました！";
       exchangeBtn.disabled = true;
       setCookie('exchanged', 'true');
@@ -202,6 +214,7 @@
         resultDiv.textContent = storedResult;
         randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
         exchangeBtn.disabled = exchanged === 'true';
+        noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
       }
 
       // 抽選済みならボタン非表示
@@ -210,7 +223,7 @@
       }
     });
 
-    /* --- イベント登録 --- */
+    /* --- 抽選ボタンイベント登録 --- */
     lotteryBtn.addEventListener('click', runLottery);
   </script>
 </body>
