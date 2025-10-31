@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（制限なし）</title>
+  <title>抽選＆交換サイト（フルスクリーン対応）</title>
   <style>
     body {
       display: flex;
@@ -18,6 +18,8 @@
       padding: 2rem;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
     }
     .title {
       font-size: 2rem;
@@ -28,15 +30,21 @@
       color: #0077cc;
       margin: 1rem 0;
     }
-    .rand {
-      font-size: 1rem;
-      color: #555;
-    }
     .btn {
       font-size: 1rem;
       padding: 0.5rem 1rem;
       margin-top: 1rem;
       cursor: pointer;
+    }
+    video.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 9999;
+      background: black;
     }
   </style>
 </head>
@@ -49,22 +57,36 @@
   </div>
 
   <script>
-    function playVideo(src) {
-      const video = document.createElement('video');
-      video.src = src;
-      video.width = 560;
-      video.height = 315;
-      video.autoplay = true;
-      video.controls = true;
-      closeContainer.innerHTML = ''; 
-      closeContainer.appendChild(video);
-    }
-
     const resultDiv = document.getElementById('result');
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
 
-    // 「サイトを閉じる」ボタンを作成する関数
+    // フルスクリーン動画再生関数
+    function playVideoFullscreen(src) {
+      const video = document.createElement('video');
+      video.src = src;
+      video.autoplay = true;
+      video.className = 'fullscreen';
+      video.controls = false;
+      document.body.appendChild(video);
+
+      // ブラウザのフルスクリーンAPIを使用
+      if (video.requestFullscreen) {
+        video.requestFullscreen().catch(() => {});
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      }
+
+      // 再生終了時に自動で削除
+      video.addEventListener('ended', () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        }
+        video.remove();
+      });
+    }
+
+    // 「サイトを閉じる」ボタンを作成
     function createCloseButton() {
       const closeBtn = document.createElement('button');
       closeBtn.textContent = '3秒後に自動で閉じます（またはクリック）';
@@ -82,26 +104,27 @@
     // 抽選処理（毎回新しく実行される）
     function runLottery() {
       const rand = Math.random() * 1000;
-      let prize;
+      let prize, videoFile;
 
       if (rand < 10) {
-        playVideo("1等.mp4");
         prize = "🎉 1等！おめでとう！";
+        videoFile = "1等.mp4";
       } else if (rand < 40) {
-        playVideo("2等.mp4");
         prize = "✨ 2等！すばらしい！";
+        videoFile = "2等.mp4";
       } else if (rand < 80) {
-        playVideo("3等.mp4");
         prize = "🎁 3等！感謝の気持ちを込めて！";
+        videoFile = "3等.mp4";
       } else if (rand < 150) {
-        playVideo("4等.mp4");
         prize = "4等！それなりに";
+        videoFile = "4等.mp4";
       } else {
-        playVideo("はずれ.mp4");
         prize = "残念！はずれ～";
+        videoFile = "はずれ.mp4";
       }
 
       resultDiv.textContent = prize;
+      playVideoFullscreen(videoFile);
     }
 
     // ページ読み込み時に毎回抽選
