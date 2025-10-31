@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -31,11 +32,6 @@
       font-size: 2rem;
       color: #0077cc;
       margin: 1rem 0;
-    }
-    .rand {
-      font-size: 1rem;
-      color: #555;
-      margin-top: 0.5rem;
     }
     .notice {
       font-size: 1rem;
@@ -73,7 +69,6 @@
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
     <div class="result" id="result">↓下の抽選するを押してください↓</div>
-    <div class="rand" id="rand">乱数: ...</div>
     <div class="notice" id="notice"></div>
     <button class="btn" id="lotteryBtn">抽選する</button>
     <button class="btn" id="exchangeBtn" disabled>交換する</button>
@@ -82,7 +77,6 @@
 
   <script>
     const resultDiv = document.getElementById('result');
-    const randDiv = document.getElementById('rand');
     const noticeDiv = document.getElementById('notice');
     const lotteryBtn = document.getElementById('lotteryBtn');
     const exchangeBtn = document.getElementById('exchangeBtn');
@@ -146,14 +140,12 @@
     /* --- 抽選処理 --- */
     function runLottery() {
       const storedResult = getCookie('lottery_result');
-      const storedRand = getCookie('lottery_rand');
       const exchanged = getCookie('exchanged');
 
       // すでに抽選済みなら弾く
-      if (storedResult && storedRand) {
+      if (storedResult) {
         alert("今日はすでに抽選済みです。");
         resultDiv.textContent = storedResult;
-        randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
         exchangeBtn.disabled = exchanged === 'true';
         lotteryBtn.style.display = 'none';
         noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
@@ -179,13 +171,11 @@
 
       // 結果表示
       resultDiv.textContent = prize;
-      randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
       noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
       exchangeBtn.disabled = false;
 
       // Cookie保存（1日有効）
       setCookie('lottery_result', prize);
-      setCookie('lottery_rand', rand);
       setCookie('lottery_done', 'true');
 
       // 抽選ボタン非表示
@@ -209,13 +199,11 @@
     /* --- ページ読み込み時に復元 --- */
     window.addEventListener('DOMContentLoaded', () => {
       const storedResult = getCookie('lottery_result');
-      const storedRand = getCookie('lottery_rand');
       const exchanged = getCookie('exchanged');
       const done = getCookie('lottery_done');
 
-      if (storedResult && storedRand) {
+      if (storedResult) {
         resultDiv.textContent = storedResult;
-        randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
         exchangeBtn.disabled = exchanged === 'true';
         noticeDiv.textContent = "本館6Fまでお越しください。景品交換いたします！";
       }
