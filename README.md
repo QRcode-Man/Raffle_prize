@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>抽選＆交換サイト（クリック抽選＆フルスクリーン対応）</title>
+  <title>抽選＆交換サイト</title>
   <style>
     body {
       display: flex;
@@ -56,7 +56,7 @@
 <body>
   <div class="container">
     <div class="title">抽選結果はこちら！</div>
-    <div class="result" id="result">まだ抽選していません</div>
+    <div class="result" id="result">抽選ボタンを押してください！</div>
     <div class="rand" id="rand">乱数: ...</div>
     <button class="btn" id="lotteryBtn">抽選する</button>
     <button class="btn" id="exchangeBtn" disabled>交換する</button>
@@ -70,7 +70,19 @@
     const exchangeBtn = document.getElementById('exchangeBtn');
     const closeContainer = document.getElementById('closeContainer');
 
-    // フルスクリーン動画再生関数
+    /* --- Cookie操作関数 --- */
+    function setCookie(name, value, days = 1) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${date.toUTCString()};path=/`;
+    }
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    /* --- フルスクリーン動画再生 --- */
     function playVideoFullscreen(src) {
       const video = document.createElement('video');
       video.src = src;
@@ -79,14 +91,14 @@
       video.controls = false;
       document.body.appendChild(video);
 
-      // フルスクリーンをリクエスト（ユーザー操作内なのでOK）
+      // フルスクリーン要求（クリックイベント内なら動く）
       if (video.requestFullscreen) {
         video.requestFullscreen().catch(() => {});
       } else if (video.webkitRequestFullscreen) {
         video.webkitRequestFullscreen();
       }
 
-      // 再生終了時に削除
+      // 再生終了で削除
       video.addEventListener('ended', () => {
         if (document.fullscreenElement) {
           document.exitFullscreen();
@@ -95,7 +107,7 @@
       });
     }
 
-    // 「サイトを閉じる」ボタン
+    /* --- 閉じるボタン --- */
     function createCloseButton() {
       const closeBtn = document.createElement('button');
       closeBtn.textContent = '3秒後に自動で閉じます（またはクリック）';
@@ -110,8 +122,21 @@
       }, 3000);
     }
 
-    // 抽選処理（ボタンクリック時のみ実行）
+    /* --- 抽選処理 --- */
     function runLottery() {
+      // 既に抽選済みならCookieから復元
+      const storedResult = getCookie('lottery_result');
+      const storedRand = getCookie('lottery_rand');
+      const exchanged = getCookie('exchanged');
+
+      if (storedResult && storedRand) {
+        resultDiv.textContent = storedResult;
+        randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
+        exchangeBtn.disabled = exchanged === 'true';
+        return alert("今日はすでに抽選済みです。");
+      }
+
+      // 新規抽選
       const rand = Math.random() * 1000;
       let prize, videoFile;
 
@@ -132,22 +157,38 @@
         videoFile = "はずれ.mp4";
       }
 
+      // 結果表示・保存
       resultDiv.textContent = prize;
       randDiv.textContent = `乱数: ${rand.toFixed(2)}`;
       exchangeBtn.disabled = false;
+      setCookie('lottery_result', prize);
+      setCookie('lottery_rand', rand);
 
-      // フルスクリーン再生
       playVideoFullscreen(videoFile);
     }
 
-    // ボタンで抽選を実行
-    lotteryBtn.addEventListener('click', runLottery);
-
-    // 交換処理
+    /* --- 交換処理 --- */
     exchangeBtn.addEventListener('click', () => {
       resultDiv.textContent = "✅ 景品を交換しました！";
       exchangeBtn.disabled = true;
+      setCookie('exchanged', 'true');
       createCloseButton();
+    });
+
+    /* --- イベント登録 --- */
+    lotteryBtn.addEventListener('click', runLottery);
+
+    // ページ読み込み時にCookieがあれば復元
+    window.addEventListener('DOMContentLoaded', () => {
+      const storedResult = getCookie('lottery_result');
+      const storedRand = getCookie('lottery_rand');
+      const exchanged = getCookie('exchanged');
+
+      if (storedResult && storedRand) {
+        resultDiv.textContent = storedResult;
+        randDiv.textContent = `乱数: ${parseFloat(storedRand).toFixed(2)}`;
+        exchangeBtn.disabled = exchanged === 'true';
+      }
     });
   </script>
 </body>
