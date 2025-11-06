@@ -151,7 +151,7 @@
         return;
       }
 
-      const rand = Math.random() * 800;
+      const rand = Math.random() * 1000;
       let prize, videoFile;
 
       if (rand < 200) {
@@ -163,7 +163,12 @@
       } else if (rand < 600) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等.mp4";
-      } else {
+      } 
+        else if(rand<800){
+        prize = "🥳 sago賞！グレート！";
+        videoFile = "sago.mp4";
+      }
+      else {
         prize = "残念！はずれ～";
         videoFile = "はずれ.mp4";
       }
