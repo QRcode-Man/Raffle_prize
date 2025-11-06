@@ -154,17 +154,17 @@
       const rand = Math.random() * 1000;
       let prize, videoFile;
 
-      if (rand < 200) {
+      if (rand < 1) {
         prize = "🎉 1等！おめでとう！";
         videoFile = "1等.mp4";
-      } else if (rand < 400) {
+      } else if (rand < 2) {
         prize = "✨ 2等！すばらしい！";
         videoFile = "2等.mp4";
-      } else if (rand < 600) {
+      } else if (rand < 3) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等.mp4";
       } 
-        else if(rand<800){
+        else if(rand<999){
         prize = "🥳 Sago賞！グレート！";
         videoFile = "Sago.mp4";
       }
