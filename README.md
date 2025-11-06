@@ -165,8 +165,8 @@
         videoFile = "3等.mp4";
       } 
         else if(rand<800){
-        prize = "🥳 sago賞！グレート！";
-        videoFile = "sago.mp4";
+        prize = "🥳 Sago賞！グレート！";
+        videoFile = "Sago.mp4";
       }
       else {
         prize = "残念！はずれ～";
