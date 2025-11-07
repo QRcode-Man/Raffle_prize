@@ -70,7 +70,7 @@
     <div class="result" id="result">↓下の抽選するを押してください↓</div>
     <div class="notice" id="notice"></div>
     <button class="btn" id="lotteryBtn">抽選する</button>
-    <button class="btn" id="exchangeBtn" disabled>交換する</button>
+    <button class="btn" id="exchangeBtn" disabled>交換</button>
     <div id="closeContainer"></div>
   </div>
 
@@ -147,7 +147,7 @@
         resultDiv.textContent = storedResult;
         exchangeBtn.disabled = exchanged === 'true';
         lotteryBtn.style.display = 'none';
-        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！（はずれの場合は景品は無いです）";
+        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！<br>※２等の場合はテラスのぽーる・りーど・炭すにて店頭引き換えとさせていただきます（はずれの場合は景品は無いです）";
         return;
       }
 
