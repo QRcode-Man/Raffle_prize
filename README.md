@@ -124,14 +124,14 @@
       closeBtn.textContent = '3秒後に自動で閉じます（またはクリック）';
       closeBtn.className = 'btn';
       closeBtn.onclick = () => {
-        window.location.href = 'http://abehiroshi.la.coocan.jp';
+        window.location.href = 'https://www.instagram.com/scanwithme?igsh=MWJpZ3FzbXJrZjVrcg==';
       };
       closeContainer.appendChild(closeBtn);
 
       // 3秒後に自動でリダイレクト
       setTimeout(() => {
         if (getCookie('exchanged') === 'true') {  // 交換完了状態を確認
-          window.location.href = 'http://abehiroshi.la.coocan.jp';
+          window.location.href = 'https://www.instagram.com/scanwithme?igsh=MWJpZ3FzbXJrZjVrcg==';
         }
       }, 3000);
     }
@@ -151,26 +151,22 @@
         return;
       }
 
-      const rand = Math.random() * 10000;
+      const rand = Math.random() * 1000;
       let prize, videoFile;
 
-      if (rand < 25) {
+      if (rand < 10) {
         prize = "🎉 1等！おめでとう！";
         videoFile = "1等.mp4";
-      } else if (rand < 805) {
+      } else if (rand < 160) {
         prize = "✨ 2等！すばらしい！";
         videoFile = "2等.mp4";
-      } else if (rand < 2373) {
+      } else if (rand < 510) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等.mp4";
       } 
-        else if(rand<7373){
+        else{
         prize = "🥳 Sago賞！グレート！";
         videoFile = "Sago.mp4";
-      }
-      else {
-        prize = "残念！はずれ～";
-        videoFile = "はずれ.mp4";
       }
 
       // 結果表示
