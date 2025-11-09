@@ -149,7 +149,7 @@
         if (rand < 150) {
         prize = "✨ 2等！すばらしい！";
         videoFile = "2等.mp4";
-      } else if (rand < 350) {
+      } else if (rand < 250) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等(改).mp4";
       } else {
