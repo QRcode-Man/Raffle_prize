@@ -163,7 +163,45 @@
         videoFile = "2等.mp4";
       } else if (rand < 510) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
-        videoFile = "3等.mp4";
+        videoFile = "3等(改     };
+      closeContainer.appendChild(closeBtn);
+
+      // 3秒後に自動でリダイレクト
+      setTimeout(() => {
+        if (getCookie('exchanged') === 'true') {  // 交換完了状態を確認
+          window.location.href = 'https://www.instagram.com/scanwithme?igsh=MWJpZ3FzbXJrZjVrcg==';
+        }
+      }, 3000);
+    }
+
+    /* --- 抽選処理 --- */
+    function runLottery() {
+      const storedResult = getCookie('lottery_result');
+      const exchanged = getCookie('exchanged');
+
+      // すでに抽選済みなら弾く
+      if (storedResult) {
+        alert("今日はすでに抽選済みです。");
+        resultDiv.textContent = storedResult;
+        exchangeBtn.disabled = exchanged === 'true';
+        lotteryBtn.style.display = 'none';
+        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！※２等の場合はテラスのぽーる・りーど・炭すにて店頭引き換えとさせていただきます（はずれの場合は景品は無いです）";
+        return;
+      }
+
+      const rand = Math.random() * 1000;
+      let prize, videoFile;
+      
+      //↓確率変える場所↓(rand < n)nの値を変えると確率が変わる。変えたらその下層の数値も変えた分必ず数値をずらすこと。
+      if (rand < 10) {
+        prize = "🎉 1等！おめでとう！";
+        videoFile = "1等.mp4";
+      } else if (rand < 160) {
+        prize = "✨ 2等！すばらしい！";
+        videoFile = "2等.mp4";
+      } else if (rand < 510) {
+        prize = "🎁 3等！感謝の気持ちを込めて！";
+        videoFile = "3等(改).mp4";
       } 
         else{
         prize = "🥳 Sago賞！グレート！";
