@@ -18,8 +18,6 @@
       padding: 2rem;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      position: relative;
-      z-index: 1;
       width: 90%;
       max-width: 400px;
     }
@@ -102,14 +100,10 @@
       video.controls = false;
       document.body.appendChild(video);
 
-      // フルスクリーンを要求
       if (video.requestFullscreen) {
         video.requestFullscreen().catch(() => {});
-      } else if (video.webkitRequestFullscreen) {
-        video.webkitRequestFullscreen();
       }
 
-      // 再生終了で削除
       video.addEventListener('ended', () => {
         if (document.fullscreenElement) {
           document.exitFullscreen();
@@ -128,9 +122,8 @@
       };
       closeContainer.appendChild(closeBtn);
 
-      // 3秒後に自動でリダイレクト
       setTimeout(() => {
-        if (getCookie('exchanged') === 'true') {  // 交換完了状態を確認
+        if (getCookie('exchanged') === 'true') {
           window.location.href = 'https://www.instagram.com/scanwithme?igsh=MWJpZ3FzbXJrZjVrcg==';
         }
       }, 3000);
@@ -141,56 +134,18 @@
       const storedResult = getCookie('lottery_result');
       const exchanged = getCookie('exchanged');
 
-      // すでに抽選済みなら弾く
       if (storedResult) {
         alert("今日はすでに抽選済みです。");
         resultDiv.textContent = storedResult;
         exchangeBtn.disabled = exchanged === 'true';
         lotteryBtn.style.display = 'none';
-        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！※２等の場合はテラスのぽーる・りーど・炭すにて店頭引き換えとさせていただきます（はずれの場合は景品は無いです）";
+        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！";
         return;
       }
 
       const rand = Math.random() * 1000;
       let prize, videoFile;
-      
-      if (rand < 10) {
-        prize = "🎉 1等！おめでとう！";
-        videoFile = "1等.mp4";
-      } else if (rand < 160) {
-        prize = "✨ 2等！すばらしい！";
-        videoFile = "2等.mp4";
-      } else if (rand < 510) {
-        prize = "🎁 3等！感謝の気持ちを込めて！";
-        videoFile = "3等(改     };
-      closeContainer.appendChild(closeBtn);
 
-      // 3秒後に自動でリダイレクト
-      setTimeout(() => {
-        if (getCookie('exchanged') === 'true') {  // 交換完了状態を確認
-          window.location.href = 'https://www.instagram.com/scanwithme?igsh=MWJpZ3FzbXJrZjVrcg==';
-        }
-      }, 3000);
-    }
-
-    /* --- 抽選処理 --- */
-    function runLottery() {
-      const storedResult = getCookie('lottery_result');
-      const exchanged = getCookie('exchanged');
-
-      // すでに抽選済みなら弾く
-      if (storedResult) {
-        alert("今日はすでに抽選済みです。");
-        resultDiv.textContent = storedResult;
-        exchangeBtn.disabled = exchanged === 'true';
-        lotteryBtn.style.display = 'none';
-        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！※２等の場合はテラスのぽーる・りーど・炭すにて店頭引き換えとさせていただきます（はずれの場合は景品は無いです）";
-        return;
-      }
-
-      const rand = Math.random() * 1000;
-      let prize, videoFile;
-      
       if (rand < 10) {
         prize = "🎉 1等！おめでとう！";
         videoFile = "1等.mp4";
@@ -200,25 +155,18 @@
       } else if (rand < 510) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等(改).mp4";
-      } 
-        else{
+      } else {
         prize = "🥳 Sago賞！グレート！";
         videoFile = "Sago.mp4";
       }
-      
-      // 結果表示
+
       resultDiv.textContent = prize;
-      noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！※２等の場合はテラスのぽーる・りーど・炭すにて店頭引き換えとさせていただきます（はずれの場合は景品は無いです）";
+      noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！";
       exchangeBtn.disabled = false;
 
-      // Cookie保存（1日有効）
       setCookie('lottery_result', prize);
       setCookie('lottery_done', 'true');
-
-      // 抽選ボタン非表示
       lotteryBtn.style.display = 'none';
-
-      // フルスクリーン動画再生
       playVideoFullscreen(videoFile);
     }
 
@@ -233,7 +181,7 @@
       createCloseButton();
     });
 
-    /* --- ページ読み込み時に復元 --- */
+    /* --- 初期化 --- */
     window.addEventListener('DOMContentLoaded', () => {
       const storedResult = getCookie('lottery_result');
       const exchanged = getCookie('exchanged');
@@ -242,23 +190,20 @@
       if (storedResult) {
         resultDiv.textContent = storedResult;
         exchangeBtn.disabled = exchanged === 'true';
-        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！※２等の場合はテラスのぽーる・りーど・炭すにて店頭引き換えとさせていただきます（はずれの場合は景品はないです）";
       }
 
-      // ページが再読み込みされた後、交換が完了していれば「交換完了」メッセージを表示
       if (exchanged === 'true') {
         resultDiv.textContent = "✅ 景品を交換しました！";
         exchangeBtn.disabled = true;
-        createCloseButton(); // 閉じるボタンを表示
+        createCloseButton();
       }
 
-      // 抽選済みならボタン非表示
       if (done === 'true') {
         lotteryBtn.style.display = 'none';
       }
     });
 
-    /* --- 抽選ボタンイベント登録 --- */
+    /* --- ボタンイベント登録 --- */
     lotteryBtn.addEventListener('click', runLottery);
   </script>
 </body>
