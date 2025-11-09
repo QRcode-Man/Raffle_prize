@@ -146,10 +146,10 @@
       const rand = Math.random() * 1000;
       let prize, videoFile;
 
-        if (rand < 160) {
+        if (rand < 150) {
         prize = "✨ 2等！すばらしい！";
         videoFile = "2等.mp4";
-      } else if (rand < 510) {
+      } else if (rand < 300) {
         prize = "🎁 3等！感謝の気持ちを込めて！";
         videoFile = "3等(改).mp4";
       } else {
