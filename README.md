@@ -139,17 +139,14 @@
         resultDiv.textContent = storedResult;
         exchangeBtn.disabled = exchanged === 'true';
         lotteryBtn.style.display = 'none';
-        noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！";
+        noticeDiv.textContent = "本館6F江坂楽器までお越しください（3等の方はテラスのぽーる・りーど・炭すまでお越しください）。景品交換いたします！";
         return;
       }
 
       const rand = Math.random() * 1000;
       let prize, videoFile;
 
-      if (rand < 10) {
-        prize = "🎉 1等！おめでとう！";
-        videoFile = "1等.mp4";
-      } else if (rand < 160) {
+        if (rand < 160) {
         prize = "✨ 2等！すばらしい！";
         videoFile = "2等.mp4";
       } else if (rand < 510) {
@@ -161,7 +158,7 @@
       }
 
       resultDiv.textContent = prize;
-      noticeDiv.textContent = "本館6F江坂楽器までお越しください。景品交換いたします！";
+      noticeDiv.textContent = "本館6F江坂楽器までお越しください（3等の方はテラスのぽーる・りーど・炭すまでお越しください）。景品交換いたします！";
       exchangeBtn.disabled = false;
 
       setCookie('lottery_result', prize);
